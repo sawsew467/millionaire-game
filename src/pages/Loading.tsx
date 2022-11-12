@@ -1,30 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { getQuestion } from "../apis";
-import Game from "./Game";
 
 interface IProps {
-    turn: number,
-    match: number
+  turn: number;
+  match: number;
 }
 
-function Loading({turn, match} : IProps) {
+interface IState {
+  question: {
+    category: string;
+    correct_answer: string;
+    difficulty: string;
+    incorrect_answers: string[];
+    question: string[];
+    type: string;
+  };
+}
+
+function Loading({ turn, match }: IProps) {
   const navigate = useNavigate();
-  const [question1, setQuestion1] = useState();
-  const [question2, setQuestion2] = useState();
-  useEffect(() => {
+  const [question, setQuestion] = useState<IState["question"]>();
+  useEffect((): void => {
     getQuestion().then((res) => {
-      setQuestion1(res.data.results[0]);
-      setQuestion2(res.data.results[1]);
+      setQuestion(res.data.results[0]);
     });
   }, []);
-  if (question1 != undefined) {
-    window.localStorage.setItem('question', JSON.stringify(
-        question1,
-    ));
-    window.localStorage.setItem('turn', JSON.stringify(
-        turn,
-    ));
+  if (question != undefined) {
+    window.localStorage.setItem("question", JSON.stringify(question));
+    window.localStorage.setItem("turn", JSON.stringify(turn));
     navigate("/game");
   }
   return (

@@ -8,8 +8,8 @@ interface IProps {
 }
 
 function Result({ players, results }: IProps) {
-  const [searchInput, setSearchInput] = useState("");
-  const [searchArr, setSearchArr] = useState(players);
+  const [searchInput, setSearchInput] = useState<string>("");
+  const [searchArr, setSearchArr] = useState<IProps["players"]>(players);
   const [resultsChars, setResultsChars] = useState<string[]>([]);
   const [answersChars, setAnswersChars] = useState<string[]>([]);
   const [scores, setScores] = useState<number[]>([]);
@@ -63,7 +63,7 @@ function Result({ players, results }: IProps) {
     }
     window.localStorage.setItem('resultData', JSON.stringify(resultData))
   }, []);
-  const handleSearch = () => {
+  const handleSearch = ():void => {
     const filterArr = players.filter(item => item.name.includes(searchInput));
     setSearchArr(filterArr)
   };

@@ -5,8 +5,6 @@ import Game from "./pages/Game";
 import Home from "./pages/Home";
 import Loading from "./pages/Loading";
 import Result from "./pages/Result";
-import { useSelector } from "react-redux";
-import { playersSelector } from "./redux/selectors";
 import Winner from "./pages/Winner";
 
 export interface IState {

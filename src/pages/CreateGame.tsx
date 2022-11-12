@@ -5,22 +5,13 @@ import { IState as Props } from "../App";
 
 interface IProps {
   players: Props["players"];
-  setPlayers: React.Dispatch<
-    React.SetStateAction<
-      {
-        id: number;
-        name: string;
-        answers: number[];
-        times: number[];
-      }[]
-    >
-  >;
+  setPlayers: React.Dispatch<React.SetStateAction<Props["players"]>>;
 }
 
 function CreateGame({ players, setPlayers }: IProps) {
   const [name1, setName1] = useState<string>("");
   const [name2, setName2] = useState<string>("");
-  const handleSubmit = ():void => {
+  const handleSubmit = (): void => {
     setPlayers([
       {
         id: 1,

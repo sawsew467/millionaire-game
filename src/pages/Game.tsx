@@ -4,25 +4,9 @@ import { IState as Props } from "../App";
 
 interface IProps {
   players: Props["players"];
-  setPlayers: React.Dispatch<
-    React.SetStateAction<
-      {
-        id: number;
-        name: string;
-        answers: number[];
-        times: number[];
-      }[]
-    >
-  >;
+  setPlayers: React.Dispatch<React.SetStateAction<Props["players"]>>;
   results: Props["results"];
-  setResults: React.Dispatch<
-    React.SetStateAction<
-      {
-        id: number;
-        result: number[];
-      }[]
-    >
-  >;
+  setResults: React.Dispatch<React.SetStateAction<Props["results"]>>;
   match: number;
   setMatch: React.Dispatch<React.SetStateAction<number>>;
   turn: number;
@@ -55,7 +39,7 @@ function Game({
   setResults,
 }: IProps) {
   const navigate = useNavigate();
-  const [countdown, setCountdown] = useState(10);
+  const [countdown, setCountdown] = useState<number>(10);
   const question: IState["question"] = JSON.parse(
     window.localStorage.getItem("question") ?? ""
   );
@@ -73,7 +57,7 @@ function Game({
     .sort((a, b) => {
       return a.answer[0].charCodeAt(0) - b.answer[0].charCodeAt(0);
     });
-  const handleSubmit = () => {
+  const handleSubmit = (): void => {
     let correctIndex = 0;
     for (let i = 0; i < 4; i++) {
       if (answers[i].answer === question.correct_answer) {
@@ -94,8 +78,16 @@ function Game({
           result: results[1].result,
         },
       ]);
-      countdown > 0 ? players[0].answers.push(choosen) : players[0].answers.push(0);
-      players[0].times.push(10-countdown);
+      if (countdown > 0) {
+        players[0].answers.push(choosen);
+      } else {
+        if (choosen === -1) {
+          players[0].answers.push(0);
+        } else {
+          players[0].answers.push(choosen);
+        }
+      }
+      players[0].times.push(10 - countdown);
       setPlayers([
         {
           id: 1,
@@ -110,8 +102,6 @@ function Game({
           times: players[1].times,
         },
       ]);
-      console.log(results[0].result);
-      
       navigate("/loading");
     }
 
@@ -128,8 +118,16 @@ function Game({
           result: results[1].result,
         },
       ]);
-      countdown > 0 ? players[1].answers.push(choosen) : players[1].answers.push(0);
-      players[1].times.push(10-countdown);
+      if (countdown > 0) {
+        players[1].answers.push(choosen);
+      } else {
+        if (choosen === -1) {
+          players[1].answers.push(0);
+        } else {
+          players[1].answers.push(choosen);
+        }
+      }
+      players[1].times.push(10 - countdown);
       setPlayers([
         {
           id: 1,
@@ -146,7 +144,6 @@ function Game({
       ]);
       setTurn(0);
       setMatch(match + 1);
-      console.log(results[1].result);
 
       if (match + 1 > 3) {
         navigate("/result");
@@ -155,15 +152,17 @@ function Game({
       }
     }
   };
-  useEffect(() => {
+  useEffect((): void => {
     setTimeout(() => {
       setCountdown(countdown - 1);
       if (countdown <= 0) {
-        // setChoosen(0);
         handleSubmit();
       }
     }, 1000);
   }, [countdown]);
+  function decodeHTMLEntities(rawStr:string) {
+    return rawStr.replace(/&#(\d+);/g, ((match, dec) => `${String.fromCharCode(dec)}`));
+  }
   return (
     <>
       <div className="w-[100vw] h-[100vh] flex flex-col justify-center items-center">
@@ -182,9 +181,9 @@ function Game({
           </div>
           <div className="w-full flex flex-col justify-center items-center mt-2">
             <p className="mb-2 text-lg">
-              {match}. {question.question}
+              {match}. { decodeHTMLEntities(question.question)}
             </p>
-            <ul className="lg:w-2/5 md:w-3/5 w-full flex flex-col gap-2">
+            <ul className="lg:w-3/5 md:w-3/5 w-full flex flex-col gap-2">
               {answers.map((item, index) => (
                 <li
                   className={
