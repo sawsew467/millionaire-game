@@ -32,7 +32,7 @@ function CreateGame({ players, setPlayers }: IProps) {
         times: [],
       },
     ]);
-    navigate("/game")
+    navigate("/loading")
   };
   return (
     <div className="w-[100vw] h-[100vh] flex justify-center items-center">

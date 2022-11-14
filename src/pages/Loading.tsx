@@ -19,6 +19,8 @@ interface IState {
 }
 
 function Loading({ turn, match }: IProps) {
+  console.log("!!!");
+
   const navigate = useNavigate();
   const [question, setQuestion] = useState<IState["question"]>();
   useEffect((): void => {
@@ -27,6 +29,7 @@ function Loading({ turn, match }: IProps) {
     });
   }, []);
   if (question != undefined) {
+    
     window.localStorage.setItem("question", JSON.stringify(question));
     window.localStorage.setItem("turn", JSON.stringify(turn));
     navigate("/game");
