@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { IState as Props } from "../App";
 import Timer from "../components/Timer";
+import {decode} from 'html-entities';
 
 interface IProps {
   players: Props["players"];
@@ -157,7 +158,8 @@ function Game({
           </div>
           <div className="w-full flex flex-col justify-center items-start mt-2">
             <p className="mb-2 text-lg text-start">
-              {match}. {decodeHTMLEntities(question.question)}
+              {/* {match}. {decodeHTMLEntities(question.question)} */}
+              {match}. {decode(question.question)}
             </p>
             <ul className="lg:w-3/5 md:w-3/5 w-full flex flex-col gap-2 mx-auto">
               {answers.map((item, index) => (
