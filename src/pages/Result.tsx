@@ -31,6 +31,7 @@ function Result({ players, results }: IProps) {
     let time1: number = 0;
     let score2: number = 0;
     let time2: number = 0;
+
     for (let i = 0; i < 3; i++) {
       time1 = time1 + players[0].times[i];
       if (resultsChar1[i] === answersChar1[i]) {
@@ -41,6 +42,7 @@ function Result({ players, results }: IProps) {
         score2++;
       }
     }
+
     setAnswersChars([...answersChar1, ...answersChar2]);
     setResultsChars([...resultsChar1, ...resultsChar2]);
     setScores([score1, score2]);

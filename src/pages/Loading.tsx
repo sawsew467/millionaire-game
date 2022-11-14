@@ -19,8 +19,6 @@ interface IState {
 }
 
 function Loading({ turn, match }: IProps) {
-  console.log("!!!");
-
   const navigate = useNavigate();
   const [question, setQuestion] = useState<IState["question"]>();
   useEffect((): void => {
@@ -29,11 +27,14 @@ function Loading({ turn, match }: IProps) {
     });
   }, []);
   if (question != undefined) {
-    
     window.localStorage.setItem("question", JSON.stringify(question));
     window.localStorage.setItem("turn", JSON.stringify(turn));
-    navigate("/game");
   }
+  useEffect((): void => {
+    if (question != undefined) {
+      navigate("/game");
+    }
+  }, [question]);
   return (
     <>
       <div className="w-[100vw] h-[100vh] flex justify-center items-center">

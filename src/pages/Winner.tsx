@@ -19,20 +19,22 @@ function Winner({ players, results }: IProps) {
   const answersChar2: string[] = players[1].answers.map((item) =>
     String.fromCharCode("A".charCodeAt(0) + item)
   );
-  let score1:number = 0;
-  let score2:number = 0;
-  let time1:number = 0;
-  let time2:number = 0;
+  let score1: number = 0;
+  let time1: number = 0;
+  let score2: number = 0;
+  let time2: number = 0;
+
   for (let i = 0; i < 3; i++) {
+    time1 = time1 + players[0].times[i];
     if (resultsChar1[i] === answersChar1[i]) {
-      time1 = time1 + players[0].times[i];
       score1++;
     }
+    time2 = time2 + players[1].times[i];
     if (resultsChar2[i] === answersChar2[i]) {
-      time2 = time2 + players[1].times[i];
       score2++;
     }
   }
+
   const winner = (): string => {
     if (score1 !== score2) {
       return score1 > score2
