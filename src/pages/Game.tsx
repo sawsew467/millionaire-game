@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { IState as Props } from "../App";
+import Timer from "../components/Timer";
 
 interface IProps {
   players: Props["players"];
@@ -57,6 +58,46 @@ function Game({
     .sort((a, b) => {
       return a.answer[0].charCodeAt(0) - b.answer[0].charCodeAt(0);
     });
+  const handlePlayerTurn = (turn: number): void => {
+    setResults([
+      {
+        id: 1,
+        result: results[0].result,
+      },
+      {
+        id: 2,
+        result: results[1].result,
+      },
+    ]);
+    if (countdown > 0) {
+      if (choosen === -1) {
+        players[turn].answers.push(0);
+      } else {
+        players[turn].answers.push(choosen);
+      }
+    } else {
+      if (choosen === -1) {
+        players[turn].answers.push(0);
+      } else {
+        players[turn].answers.push(choosen);
+      }
+    }
+    players[turn].times.push(10 - countdown);
+    setPlayers([
+      {
+        id: 1,
+        name: players[0].name,
+        answers: players[0].answers,
+        times: players[0].times,
+      },
+      {
+        id: 2,
+        name: players[1].name,
+        answers: players[1].answers,
+        times: players[1].times,
+      },
+    ]);
+  };
   const handleSubmit = (): void => {
     let correctIndex = 0;
     for (let i = 0; i < 4; i++) {
@@ -67,44 +108,7 @@ function Game({
     //
     if (turn === 0) {
       results[0].result.push(correctIndex);
-      setResults([
-        {
-          id: 1,
-          result: results[0].result,
-        },
-        {
-          id: 2,
-          result: results[1].result,
-        },
-      ]);
-      if (countdown > 0) {
-        if (choosen === -1) {
-          players[0].answers.push(0);
-        } else {
-          players[0].answers.push(choosen);
-        }
-      } else {
-        if (choosen === -1) {
-          players[0].answers.push(0);
-        } else {
-          players[0].answers.push(choosen);
-        }
-      }
-      players[0].times.push(10 - countdown);
-      setPlayers([
-        {
-          id: 1,
-          name: players[0].name,
-          answers: players[0].answers,
-          times: players[0].times,
-        },
-        {
-          id: 2,
-          name: players[1].name,
-          answers: players[1].answers,
-          times: players[1].times,
-        },
-      ]);
+      handlePlayerTurn(turn)
       setTurn(1);
       navigate("/loading");
     }
@@ -112,44 +116,7 @@ function Game({
     //
     if (turn === 1) {
       results[1].result.push(correctIndex);
-      setResults([
-        {
-          id: 1,
-          result: results[0].result,
-        },
-        {
-          id: 2,
-          result: results[1].result,
-        },
-      ]);
-      if (countdown > 0) {
-        if (choosen === -1) {
-          players[1].answers.push(0);
-        } else {
-          players[1].answers.push(choosen);
-        }
-      } else {
-        if (choosen === -1) {
-          players[1].answers.push(0);
-        } else {
-          players[1].answers.push(choosen);
-        }
-      }
-      players[1].times.push(10 - countdown);
-      setPlayers([
-        {
-          id: 1,
-          name: players[0].name,
-          answers: players[0].answers,
-          times: players[0].times,
-        },
-        {
-          id: 2,
-          name: players[1].name,
-          answers: players[1].answers,
-          times: players[1].times,
-        },
-      ]);
+      handlePlayerTurn(turn)
       setTurn(0);
       setMatch(match + 1);
 
@@ -160,16 +127,19 @@ function Game({
       }
     }
   };
-  // useEffect((): void => {
-  //   setTimeout(() => {
-  //     setCountdown(countdown - 1);
-  //     if (countdown <= 0) {
-  //       handleSubmit();
-  //     }
-  //   }, 1000);
-  // }, [countdown]);
-  function decodeHTMLEntities(rawStr:string) {
-    return rawStr.replace(/&#(\d+);/g, ((match, dec) => `${String.fromCharCode(dec)}`));
+  useEffect((): void => {
+    setTimeout(() => {
+      setCountdown(countdown - 1);
+      if (countdown <= 0) {
+        handleSubmit();
+      }
+    }, 1000);
+  }, [countdown]);
+  function decodeHTMLEntities(rawStr: string) {
+    return rawStr.replace(
+      /&#(\d+);/g,
+      (match, dec) => `${String.fromCharCode(dec)}`
+    );
   }
   return (
     <>
@@ -183,15 +153,13 @@ function Game({
               {3 - match} questions left
             </h1>
             <p>Time remaining</p>
-            <div className="w-10 h-10 rounded-full border-2 border-[#818181] text-center leading-[36px] ml-4">
-              {countdown}
-            </div>
+            <Timer countdown={countdown}></Timer>
           </div>
-          <div className="w-full flex flex-col justify-center items-center mt-2">
+          <div className="w-full flex flex-col justify-center items-start mt-2">
             <p className="mb-2 text-lg text-start">
-              {match}. { decodeHTMLEntities(question.question)}
+              {match}. {decodeHTMLEntities(question.question)}
             </p>
-            <ul className="lg:w-3/5 md:w-3/5 w-full flex flex-col gap-2">
+            <ul className="lg:w-3/5 md:w-3/5 w-full flex flex-col gap-2 mx-auto">
               {answers.map((item, index) => (
                 <li
                   className={
@@ -218,7 +186,7 @@ function Game({
               ))}
             </ul>
             <button
-              className="text-lg text-[#59595a] px-8 py-1 border-2 mt-4 border-[#818181] bg-[#cccccc] rounded-md"
+              className="text-lg text-[#59595a] px-8 py-1 border-2 mt-4 mx-auto border-[#818181] bg-[#cccccc] rounded-md"
               onClick={handleSubmit}
             >
               Submit

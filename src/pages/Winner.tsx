@@ -7,22 +7,22 @@ interface IProps {
 }
 
 function Winner({ players, results }: IProps) {
-  const resultsChar1 = results[0].result.map((item, index) =>
+  const resultsChar1: string[] = results[0].result.map((item) =>
     String.fromCharCode("A".charCodeAt(0) + item)
   );
-  const resultsChar2 = results[1].result.map((item, index) =>
+  const resultsChar2: string[] = results[1].result.map((item) =>
     String.fromCharCode("A".charCodeAt(0) + item)
   );
-  const answersChar1 = players[0].answers.map((item, index) =>
+  const answersChar1: string[] = players[0].answers.map((item) =>
     String.fromCharCode("A".charCodeAt(0) + item)
   );
-  const answersChar2 = players[1].answers.map((item, index) =>
+  const answersChar2: string[] = players[1].answers.map((item) =>
     String.fromCharCode("A".charCodeAt(0) + item)
   );
-  let score1 = 0;
-  let score2 = 0;
-  let time1 = 0;
-  let time2 = 0;
+  let score1:number = 0;
+  let score2:number = 0;
+  let time1:number = 0;
+  let time2:number = 0;
   for (let i = 0; i < 3; i++) {
     if (resultsChar1[i] === answersChar1[i]) {
       time1 = time1 + players[0].times[i];
@@ -33,11 +33,19 @@ function Winner({ players, results }: IProps) {
       score2++;
     }
   }
-  const winner = () => {
+  const winner = (): string => {
     if (score1 !== score2) {
-      return score1 > score2 ? players[0].name : players[1].name;
+      return score1 > score2
+        ? `Winner: ${players[0].name}`
+        : `Winner: ${players[1].name}`;
     } else {
-      return time1 < time2 ? players[0].name : players[1].name;
+      if (time1 !== time2) {
+        return time1 < time2
+          ? `Winner: ${players[0].name}`
+          : `Winner: ${players[1].name}`;
+      } else {
+        return "The match is drawn!";
+      }
     }
   };
   return (
@@ -47,9 +55,7 @@ function Winner({ players, results }: IProps) {
           <div className="w-[10rem]">
             <img src={require("../assets/images/gameicon.png")}></img>
           </div>
-          <h1 className="text-4xl font-bold text-[#505150]">
-            Winner: {winner()}
-          </h1>
+          <h1 className="text-2xl font-bold text-[#505150]">{winner()}</h1>
         </div>
       </div>
     </>

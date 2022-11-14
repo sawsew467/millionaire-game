@@ -15,22 +15,22 @@ function Result({ players, results }: IProps) {
   const [scores, setScores] = useState<number[]>([]);
   const [times, setTimes] = useState<number[]>([]);
   useEffect(() => {
-    const resultsChar1 = results[0].result.map((item) =>
+    const resultsChar1: string[] = results[0].result.map((item) =>
       String.fromCharCode("A".charCodeAt(0) + item)
     );
-    const resultsChar2 = results[1].result.map((item) =>
+    const resultsChar2: string[] = results[1].result.map((item) =>
       String.fromCharCode("A".charCodeAt(0) + item)
     );
-    const answersChar1 = players[0].answers.map((item) =>
+    const answersChar1: string[] = players[0].answers.map((item) =>
       String.fromCharCode("A".charCodeAt(0) + item)
     );
-    const answersChar2 = players[1].answers.map((item) =>
+    const answersChar2: string[] = players[1].answers.map((item) =>
       String.fromCharCode("A".charCodeAt(0) + item)
     );
-    let score1 = 0;
-    let time1 = 0;
-    let score2 = 0;
-    let time2 = 0;
+    let score1: number = 0;
+    let time1: number = 0;
+    let score2: number = 0;
+    let time2: number = 0;
     for (let i = 0; i < 3; i++) {
       time1 = time1 + players[0].times[i];
       if (resultsChar1[i] === answersChar1[i]) {
@@ -59,13 +59,13 @@ function Result({ players, results }: IProps) {
         answers: answersChar2,
         results: resultsChar2,
         timeFinish: time2,
-      }
-    }
-    window.localStorage.setItem('resultData', JSON.stringify(resultData))
+      },
+    };
+    window.localStorage.setItem("resultData", JSON.stringify(resultData));
   }, []);
-  const handleSearch = ():void => {
-    const filterArr = players.filter(item => item.name.includes(searchInput));
-    setSearchArr(filterArr)
+  const handleSearch = (): void => {
+    const filterArr = players.filter((item) => item.name.includes(searchInput));
+    setSearchArr(filterArr);
   };
   return (
     <>

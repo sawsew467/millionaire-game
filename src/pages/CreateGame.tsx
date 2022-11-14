@@ -60,14 +60,12 @@ function CreateGame({ players, setPlayers }: IProps) {
               onChange={(e) => setName2(e.target.value)}
             ></input>
           </form>
-          {/* <Link to="/loading"> */}
             <button
               className="border-2 border-[#818181] text-[#6e6e6e] px-6 mt-4"
               onClick={handleSubmit}
             >
               Submit
             </button>
-          {/* </Link> */}
           {isErr && (
             <p className="text-[#ff5151] text-sm mt-4">
               Players's name are not invalid
