@@ -67,7 +67,6 @@ function Game({
     //
     if (turn === 0) {
       results[0].result.push(correctIndex);
-      setTurn(1);
       setResults([
         {
           id: 1,
@@ -79,7 +78,11 @@ function Game({
         },
       ]);
       if (countdown > 0) {
-        players[0].answers.push(choosen);
+        if (choosen === -1) {
+          players[0].answers.push(0);
+        } else {
+          players[0].answers.push(choosen);
+        }
       } else {
         if (choosen === -1) {
           players[0].answers.push(0);
@@ -102,6 +105,7 @@ function Game({
           times: players[1].times,
         },
       ]);
+      setTurn(1);
       navigate("/loading");
     }
 
@@ -119,7 +123,11 @@ function Game({
         },
       ]);
       if (countdown > 0) {
-        players[1].answers.push(choosen);
+        if (choosen === -1) {
+          players[1].answers.push(0);
+        } else {
+          players[1].answers.push(choosen);
+        }
       } else {
         if (choosen === -1) {
           players[1].answers.push(0);
@@ -152,14 +160,14 @@ function Game({
       }
     }
   };
-  useEffect((): void => {
-    setTimeout(() => {
-      setCountdown(countdown - 1);
-      if (countdown <= 0) {
-        handleSubmit();
-      }
-    }, 1000);
-  }, [countdown]);
+  // useEffect((): void => {
+  //   setTimeout(() => {
+  //     setCountdown(countdown - 1);
+  //     if (countdown <= 0) {
+  //       handleSubmit();
+  //     }
+  //   }, 1000);
+  // }, [countdown]);
   function decodeHTMLEntities(rawStr:string) {
     return rawStr.replace(/&#(\d+);/g, ((match, dec) => `${String.fromCharCode(dec)}`));
   }
@@ -170,7 +178,7 @@ function Game({
           {players[turn].name}'s turn
         </h1>
         <div className="lg:w-2/5 md:w-4/5 w-11/12 bg-[#f5f5f5] flex flex-col border-2 border-[#818181] p-4">
-          <div className="flex flex-row justify-between items-center border-b-2 border-[#818181] pb-2">
+          <div className="flex flex-row justify-between items-center border-b-2 border-[#818181] pb-4">
             <h1 className="md:text-2xl text-xl font-bold text-[#6e6e6e] flex-1">
               {3 - match} questions left
             </h1>
@@ -180,7 +188,7 @@ function Game({
             </div>
           </div>
           <div className="w-full flex flex-col justify-center items-center mt-2">
-            <p className="mb-2 text-lg">
+            <p className="mb-2 text-lg text-start">
               {match}. { decodeHTMLEntities(question.question)}
             </p>
             <ul className="lg:w-3/5 md:w-3/5 w-full flex flex-col gap-2">

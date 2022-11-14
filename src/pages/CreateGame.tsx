@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IState as Props } from "../App";
 
 interface IProps {
@@ -11,7 +11,13 @@ interface IProps {
 function CreateGame({ players, setPlayers }: IProps) {
   const [name1, setName1] = useState<string>("");
   const [name2, setName2] = useState<string>("");
+  const [isErr, setIsErr] = useState<boolean>(false);
+  const navigate = useNavigate();
   const handleSubmit = (): void => {
+    if (!name1 || !name2) {
+      setIsErr(true);
+      return;
+    }
     setPlayers([
       {
         id: 1,
@@ -26,6 +32,7 @@ function CreateGame({ players, setPlayers }: IProps) {
         times: [],
       },
     ]);
+    navigate("/game")
   };
   return (
     <div className="w-[100vw] h-[100vh] flex justify-center items-center">
@@ -53,14 +60,19 @@ function CreateGame({ players, setPlayers }: IProps) {
               onChange={(e) => setName2(e.target.value)}
             ></input>
           </form>
-          <Link to="/loading">
+          {/* <Link to="/loading"> */}
             <button
               className="border-2 border-[#818181] text-[#6e6e6e] px-6 mt-4"
               onClick={handleSubmit}
             >
               Submit
             </button>
-          </Link>
+          {/* </Link> */}
+          {isErr && (
+            <p className="text-[#ff5151] text-sm mt-4">
+              Players's name are not invalid
+            </p>
+          )}
         </div>
       </div>
     </div>
