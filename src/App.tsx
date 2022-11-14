@@ -46,8 +46,9 @@ function App() {
     },
   ]);
   const [turn, setTurn] = useState<number>(0);
+  const [round, setRound] = useState<number>(1);
   const [match, setMatch] = useState<number>(1);
-  
+
   return (
     <>
       <Routes>
@@ -55,12 +56,12 @@ function App() {
         <Route
           path="/create-game"
           element={
-            <CreateGame players={players} setPlayers={setPlayers}></CreateGame>
+            <CreateGame setPlayers={setPlayers}></CreateGame>
           }
         ></Route>
         <Route
           path="/loading"
-          element={<Loading turn={turn} match={match}></Loading>}
+          element={<Loading turn={turn} round={round}></Loading>}
         ></Route>
         <Route
           path="/game"
@@ -68,8 +69,8 @@ function App() {
             <Game
               players={players}
               setPlayers={setPlayers}
-              match={match}
-              setMatch={setMatch}
+              round={round}
+              setRound={setRound}
               turn={turn}
               setTurn={setTurn}
               results={results}
@@ -77,8 +78,25 @@ function App() {
             ></Game>
           }
         ></Route>
-        <Route path="/result" element={<Result players={players} results={results}></Result>}></Route>
-        <Route path="/winner" element={<Winner players={players} results={results}></Winner>}></Route>
+        <Route
+          path="/result"
+          element={<Result players={players} results={results}></Result>}
+        ></Route>
+        <Route
+          path="/winner"
+          element={
+            <Winner
+              players={players}
+              setPlayers={setPlayers}
+              results={results}
+              setResults={setResults}
+              match={match}
+              setMatch={setMatch}
+              round={round}
+              setRound={setRound}
+            ></Winner>
+          }
+        ></Route>
       </Routes>
     </>
   );

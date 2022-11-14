@@ -3,14 +3,15 @@ import { useNavigate } from "react-router";
 import { IState as Props } from "../App";
 import Timer from "../components/Timer";
 import { decode } from "html-entities";
+import AnswerList from "../components/AnswerList";
 
 interface IProps {
   players: Props["players"];
   setPlayers: React.Dispatch<React.SetStateAction<Props["players"]>>;
   results: Props["results"];
   setResults: React.Dispatch<React.SetStateAction<Props["results"]>>;
-  match: number;
-  setMatch: React.Dispatch<React.SetStateAction<number>>;
+  round: number;
+  setRound: React.Dispatch<React.SetStateAction<number>>;
   turn: number;
   setTurn: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -33,8 +34,8 @@ interface IState {
 function Game({
   players,
   setPlayers,
-  match,
-  setMatch,
+  round,
+  setRound,
   turn,
   setTurn,
   results,
@@ -70,19 +71,10 @@ function Game({
         result: results[1].result,
       },
     ]);
-    if (countdown > 0) {
-      if (choosen === -1) {
-        players[turn].answers.push(0);
-      } else {
-        players[turn].answers.push(choosen);
-      }
-    } else {
-      if (choosen === -1) {
-        players[turn].answers.push(0);
-      } else {
-        players[turn].answers.push(choosen);
-      }
-    }
+    countdown === 0
+      ? players[turn].answers.push(-1)
+      : players[turn].answers.push(choosen);
+    
     players[turn].times.push(10 - countdown);
     setPlayers([
       {
@@ -119,9 +111,9 @@ function Game({
       results[1].result.push(correctIndex);
       handlePlayerTurn(turn);
       setTurn(0);
-      setMatch(match + 1);
+      setRound(round + 1);
 
-      if (match + 1 > 3) {
+      if (round + 1 > 3) {
         navigate("/result");
       } else {
         navigate("/loading");
@@ -142,44 +134,19 @@ function Game({
         <h1 className="text-4xl text-[#818181] font-bold mb-4">
           {players[turn].name}'s turn
         </h1>
-        <div className="lg:w-2/5 md:w-4/5 w-11/12 bg-[#f5f5f5] flex flex-col border-2 border-[#818181] p-4">
+        <div className="lg:w-3/5 md:w-4/5 w-11/12 bg-[#f5f5f5] flex flex-col border-2 border-[#818181] p-4">
           <div className="flex flex-row justify-between items-center border-b-2 border-[#818181] pb-4">
-            <h1 className="md:text-2xl text-xl font-bold text-[#6e6e6e] flex-1">
-              {3 - match} questions left
+            <h1 className="md:text-xl text-md font-bold text-[#818181] flex-1">
+              {3 - round} questions left
             </h1>
-            <p>Time remaining</p>
+            <p className="text-sm text-[#6e6e6e]">Time remaining</p>
             <Timer countdown={countdown}></Timer>
           </div>
           <div className="w-full flex flex-col justify-center items-start mt-2">
-            <p className="mb-2 text-lg text-start">
-              {match}. {decode(question.question)}
+            <p className="mb-2 text-lg text-start font-bold text-[#6e6e6e]">
+              {round}. {decode(question.question)}
             </p>
-            <ul className="lg:w-3/5 md:w-3/5 w-full flex flex-col gap-2 mx-auto">
-              {answers.map((item, index) => (
-                <li
-                  className={
-                    index === choosen
-                      ? "flex flex-row items-center text-lg bg-[#818181] text-[#fff] border-2 border-[#818181] px-2 cursor-pointer"
-                      : "flex flex-row items-center text-lg text-[#818181] border-2 border-[#818181] px-2 cursor-pointer"
-                  }
-                  key={index}
-                  onClick={
-                    index !== choosen
-                      ? () => setChoosen(index)
-                      : () => setChoosen(-1)
-                  }
-                >
-                  <div
-                    className={
-                      index === choosen
-                        ? "w-4 h-4 mr-2 rounded-full border-2 border-[#fff]"
-                        : "w-4 h-4 mr-2 rounded-full border-2 border-[#888]"
-                    }
-                  ></div>
-                  <p className="w-11/12">{decode(item.answer)}</p>
-                </li>
-              ))}
-            </ul>
+            <AnswerList answers={answers} choosen={choosen} setChoosen={setChoosen}></AnswerList>
             {choosen !== -1 ? (
               <button
                 className="text-lg text-[#59595a] px-8 py-1 border-2 mt-4 mx-auto border-[#818181] bg-[#cccccc] rounded-md"
@@ -188,11 +155,9 @@ function Game({
                 Submit
               </button>
             ) : (
-              <button
-              className="text-lg text-[#59595a] px-8 py-1 border-2 mt-4 mx-auto border-[#818181] bg-[#cccccc] rounded-md opacity-50 cursor-not-allowed"
-            >
-              Submit
-            </button>
+              <button className="text-lg text-[#59595a] px-8 py-1 border-2 mt-4 mx-auto border-[#818181] bg-[#cccccc] rounded-md opacity-50 cursor-not-allowed">
+                Submit
+              </button>
             )}
           </div>
         </div>

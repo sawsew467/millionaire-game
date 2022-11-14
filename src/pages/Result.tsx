@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { IState as Props } from "../App";
+import Table from "../components/Table";
 
 interface IProps {
   players: Props["players"];
@@ -22,10 +23,14 @@ function Result({ players, results }: IProps) {
       String.fromCharCode("A".charCodeAt(0) + item)
     );
     const answersChar1: string[] = players[0].answers.map((item) =>
-      String.fromCharCode("A".charCodeAt(0) + item)
+      String.fromCharCode("A".charCodeAt(0) + item) === "@"
+        ? "empty"
+        : String.fromCharCode("A".charCodeAt(0) + item)
     );
     const answersChar2: string[] = players[1].answers.map((item) =>
-      String.fromCharCode("A".charCodeAt(0) + item)
+      String.fromCharCode("A".charCodeAt(0) + item) === "@"
+        ? "empty"
+        : String.fromCharCode("A".charCodeAt(0) + item)
     );
     let score1: number = 0;
     let time1: number = 0;
@@ -42,7 +47,6 @@ function Result({ players, results }: IProps) {
         score2++;
       }
     }
-
     setAnswersChars([...answersChar1, ...answersChar2]);
     setResultsChars([...resultsChar1, ...resultsChar2]);
     setScores([score1, score2]);
@@ -64,9 +68,12 @@ function Result({ players, results }: IProps) {
       },
     };
     window.localStorage.setItem("resultData", JSON.stringify(resultData));
-  }, []);
+  }, [players, results]);
   const handleSearch = (): void => {
-    const filterArr = players.filter((item) => item.name.includes(searchInput));
+    const playersName = players.map((item) => item.name.toLowerCase());
+    const filterArr = players.filter((item, index) =>
+      playersName[index].includes(searchInput.toLowerCase())
+    );
     setSearchArr(filterArr);
   };
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -79,7 +86,7 @@ function Result({ players, results }: IProps) {
   return (
     <>
       <div className="w-[100vw] h-[100vh] flex flex-col justify-center items-center p-2">
-        <div className="lg:w-2/5 md:w-4/5 w-11/12 bg-[#f5f5f5] flex flex-col border-2 border-[#818181] p-4">
+        <div className="lg:w-3/5 md:w-4/5 w-11/12 bg-[#f5f5f5] flex flex-col border-2 border-[#818181] p-4">
           <div className="flex flex-row justify-between items-center border-b-2 border-[#818181] pb-4">
             <h1 className="text-2xl font-bold text-[#6e6e6e]">Result game</h1>
             <Link to="/winner">
@@ -104,47 +111,7 @@ function Result({ players, results }: IProps) {
               Search
             </div>
           </form>
-          <div className="w-full flex flex-col mt-4 text-sm">
-            <div className="flex flex-row font-bold">
-              <div className="w-1/5 flex justify-center items-center p-2 border-2 border-[#818181]">
-                Player
-              </div>
-              <div className="w-1/5 flex justify-center items-center p-2 border-2 border-l-0 border-[#818181]">
-                Answer
-              </div>
-              <div className="w-1/5 flex justify-center items-center p-2 border-2 border-l-0 border-[#818181]">
-                Result
-              </div>
-              <div className="w-1/5 flex justify-center items-center p-2 border-2 border-l-0 border-[#818181]">
-                Score
-              </div>
-              <div className="w-1/5 flex justify-center items-center p-2 border-2 border-l-0 border-[#818181]">
-                Time
-              </div>
-            </div>
-            {searchArr.map((item, index) => (
-              <div className="flex flex-row" key={index}>
-                <div className="w-1/5 flex justify-center items-center p-2 border-2 border-t-0 border-[#818181]">
-                  {players[item.id - 1].name}
-                </div>
-                <div className="w-1/5 flex justify-center items-center p-2 border-2 border-l-0 border-t-0 border-[#818181]">
-                  {answersChars.slice((item.id - 1) * 3, item.id * 3).join(",")}
-                </div>
-                <div className="w-1/5 flex justify-center items-center p-2 border-2 border-l-0 border-t-0 border-[#818181]">
-                  {resultsChars.slice((item.id - 1) * 3, item.id * 3).join(",")}
-                </div>
-                <div className="w-1/5 flex justify-center items-center p-2 border-2 border-l-0 border-t-0 border-[#818181]">
-                  {scores[item.id - 1]}
-                </div>
-                <div className="w-1/5 flex justify-center items-center p-2 border-2 border-l-0 border-t-0 border-[#818181]">
-                  {times[item.id - 1]}
-                </div>
-              </div>
-            ))}
-            {
-              searchArr.length === 0 && <p className="text-center text-md mt-4">0 result</p>
-            }
-          </div>
+          <Table searchArr={searchArr}players={players} answersChars={answersChars} resultsChars={resultsChars} scores={scores} times={times}></Table>
         </div>
       </div>
     </>

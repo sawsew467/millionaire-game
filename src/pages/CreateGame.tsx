@@ -4,11 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { IState as Props } from "../App";
 
 interface IProps {
-  players: Props["players"];
   setPlayers: React.Dispatch<React.SetStateAction<Props["players"]>>;
 }
 
-function CreateGame({ players, setPlayers }: IProps) {
+function CreateGame({ setPlayers }: IProps) {
   const [name1, setName1] = useState<string>("");
   const [name2, setName2] = useState<string>("");
   const [isErr, setIsErr] = useState<boolean>(false);
@@ -51,7 +50,7 @@ function CreateGame({ players, setPlayers }: IProps) {
         <div className="flex flex-row justify-between items-center border-b-2 border-[#818181] pb-2">
           <h1 className="text-2xl font-bold text-[#6e6e6e]">Create game</h1>
           <Link to="/">
-          <FaTimes className="text-2xl text-[#6e6e6e]"></FaTimes>
+            <FaTimes className="text-2xl text-[#6e6e6e]"></FaTimes>
           </Link>
         </div>
         <div className="w-full flex flex-col justify-center items-center">
@@ -83,7 +82,9 @@ function CreateGame({ players, setPlayers }: IProps) {
           </button>
           {isErr && (
             <p className="text-[#ff5151] text-sm mt-4">
-              Players's name are not invalid
+              {name1 === ""
+                ? "Please enter Player1's name!"
+                : name2 === "" && "Please enter Player2's name!"}
             </p>
           )}
         </div>
