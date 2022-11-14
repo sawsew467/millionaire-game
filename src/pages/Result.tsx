@@ -69,6 +69,13 @@ function Result({ players, results }: IProps) {
     const filterArr = players.filter((item) => item.name.includes(searchInput));
     setSearchArr(filterArr);
   };
+  const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearch();
+      setSearchInput("");
+    }
+  };
   return (
     <>
       <div className="w-[100vw] h-[100vh] flex flex-col justify-center items-center p-2">
@@ -88,6 +95,7 @@ function Result({ players, results }: IProps) {
               placeholder="Search player"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
+              onKeyDown={(e) => handleEnter(e)}
             ></input>
             <div
               className="border-2 border-l-0 border-[#818181] rounded-r-full px-6 flex items-center cursor-pointer"
@@ -133,6 +141,9 @@ function Result({ players, results }: IProps) {
                 </div>
               </div>
             ))}
+            {
+              searchArr.length === 0 && <p className="text-center text-md mt-4">0 result</p>
+            }
           </div>
         </div>
       </div>

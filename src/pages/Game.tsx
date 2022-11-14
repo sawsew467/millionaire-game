@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { IState as Props } from "../App";
 import Timer from "../components/Timer";
-import {decode} from 'html-entities';
+import { decode } from "html-entities";
 
 interface IProps {
   players: Props["players"];
@@ -109,7 +109,7 @@ function Game({
     //
     if (turn === 0) {
       results[0].result.push(correctIndex);
-      handlePlayerTurn(turn)
+      handlePlayerTurn(turn);
       setTurn(1);
       navigate("/loading");
     }
@@ -117,7 +117,7 @@ function Game({
     //
     if (turn === 1) {
       results[1].result.push(correctIndex);
-      handlePlayerTurn(turn)
+      handlePlayerTurn(turn);
       setTurn(0);
       setMatch(match + 1);
 
@@ -136,12 +136,6 @@ function Game({
       }
     }, 1000);
   }, [countdown]);
-  function decodeHTMLEntities(rawStr: string) {
-    return rawStr.replace(
-      /&#(\d+);/g,
-      (match, dec) => `${String.fromCharCode(dec)}`
-    );
-  }
   return (
     <>
       <div className="w-[100vw] h-[100vh] flex flex-col justify-center items-center">
@@ -158,7 +152,6 @@ function Game({
           </div>
           <div className="w-full flex flex-col justify-center items-start mt-2">
             <p className="mb-2 text-lg text-start">
-              {/* {match}. {decodeHTMLEntities(question.question)} */}
               {match}. {decode(question.question)}
             </p>
             <ul className="lg:w-3/5 md:w-3/5 w-full flex flex-col gap-2 mx-auto">
@@ -166,8 +159,8 @@ function Game({
                 <li
                   className={
                     index === choosen
-                      ? "flex flex-row items-center gap-2 text-lg bg-[#818181] text-[#fff] border-2 border-[#818181] px-2 cursor-pointer"
-                      : "flex flex-row items-center gap-2 text-lg text-[#818181] border-2 border-[#818181] px-2 cursor-pointer"
+                      ? "flex flex-row items-center text-lg bg-[#818181] text-[#fff] border-2 border-[#818181] px-2 cursor-pointer"
+                      : "flex flex-row items-center text-lg text-[#818181] border-2 border-[#818181] px-2 cursor-pointer"
                   }
                   key={index}
                   onClick={
@@ -179,20 +172,28 @@ function Game({
                   <div
                     className={
                       index === choosen
-                        ? "w-4 h-4 rounded-full border-2 border-[#fff]"
-                        : "w-4 h-4 rounded-full border-2 border-[#888]"
+                        ? "w-4 h-4 mr-2 rounded-full border-2 border-[#fff]"
+                        : "w-4 h-4 mr-2 rounded-full border-2 border-[#888]"
                     }
                   ></div>
-                  <p>{item.answer}</p>
+                  <p className="w-11/12">{decode(item.answer)}</p>
                 </li>
               ))}
             </ul>
-            <button
-              className="text-lg text-[#59595a] px-8 py-1 border-2 mt-4 mx-auto border-[#818181] bg-[#cccccc] rounded-md"
-              onClick={handleSubmit}
+            {choosen !== -1 ? (
+              <button
+                className="text-lg text-[#59595a] px-8 py-1 border-2 mt-4 mx-auto border-[#818181] bg-[#cccccc] rounded-md"
+                onClick={handleSubmit}
+              >
+                Submit
+              </button>
+            ) : (
+              <button
+              className="text-lg text-[#59595a] px-8 py-1 border-2 mt-4 mx-auto border-[#818181] bg-[#cccccc] rounded-md opacity-50 cursor-not-allowed"
             >
               Submit
             </button>
+            )}
           </div>
         </div>
       </div>

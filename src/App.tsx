@@ -47,7 +47,6 @@ function App() {
   ]);
   const [turn, setTurn] = useState<number>(0);
   const [match, setMatch] = useState<number>(1);
-  // console.log(players);
   
   return (
     <>
