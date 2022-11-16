@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { IState as Props } from "../App";
-import Timer from "../components/Timer";
+import { IState as Props } from "../../App";
+import Timer from "../Timer";
 import { decode } from "html-entities";
-import AnswerList from "../components/AnswerList";
+import AnswerList from "../AnswerList";
 
 interface IProps {
   players: Props["players"];
@@ -14,6 +14,27 @@ interface IProps {
   setRound: React.Dispatch<React.SetStateAction<number>>;
   turn: number;
   setTurn: React.Dispatch<React.SetStateAction<number>>;
+  question: {
+    category: string;
+    correct_answer: string;
+    difficulty: string;
+    incorrect_answers: string[];
+    question: string;
+    type: string;
+  };
+  setQuestion: React.Dispatch<
+    React.SetStateAction<
+      | {
+          category: string;
+          correct_answer: string;
+          difficulty: string;
+          incorrect_answers: string[];
+          question: string;
+          type: string;
+        }
+      | undefined
+    >
+  >;
 }
 
 interface IState {
@@ -31,7 +52,7 @@ interface IState {
   }[];
 }
 
-function Game({
+function GameMain({
   players,
   setPlayers,
   round,
@@ -40,16 +61,16 @@ function Game({
   setTurn,
   results,
   setResults,
+  question,
+  setQuestion,
 }: IProps) {
+  const numberOfRounds:number = 3;
   const navigate = useNavigate();
   const [countdown, setCountdown] = useState<number>(10);
-  const question: IState["question"] = JSON.parse(
-    window.localStorage.getItem("question") ?? ""
-  );
   const [choosen, setChoosen] = useState<number>(-1);
   const answers: IState["answers"] = [
     question.correct_answer,
-    ...question?.incorrect_answers,
+    ...question.incorrect_answers,
   ]
     .map((item, index) => {
       return {
@@ -74,8 +95,9 @@ function Game({
     countdown === 0
       ? players[turn].answers.push(-1)
       : players[turn].answers.push(choosen);
-    
+
     players[turn].times.push(10 - countdown);
+
     setPlayers([
       {
         id: 1,
@@ -93,40 +115,48 @@ function Game({
   };
   const handleSubmit = (): void => {
     let correctIndex = 0;
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i <= numberOfRounds; i++) {
       if (answers[i].answer === question.correct_answer) {
         correctIndex = i;
       }
     }
-    //
+
     if (turn === 0) {
       results[0].result.push(correctIndex);
       handlePlayerTurn(turn);
       setTurn(1);
-      navigate("/loading");
+      const newQues = {
+        ...question,
+        question: "",
+      };
+      setQuestion(newQues);
     }
-
-    //
     if (turn === 1) {
       results[1].result.push(correctIndex);
       handlePlayerTurn(turn);
       setTurn(0);
       setRound(round + 1);
-
-      if (round + 1 > 3) {
+      if (round + 1 > numberOfRounds) {
         navigate("/result");
       } else {
-        navigate("/loading");
+        const newQues = {
+          ...question,
+          question: "",
+        };
+        setQuestion(newQues);
       }
     }
+    window.localStorage.setItem("players", JSON.stringify(players));
+    window.localStorage.setItem("results", JSON.stringify(results));
   };
   useEffect((): void => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setCountdown(countdown - 1);
-      if (countdown <= 0) {
-        handleSubmit();
-      }
     }, 1000);
+    if (countdown <= 0) {
+      clearTimeout(timer);
+      handleSubmit();
+    }
   }, [countdown]);
   return (
     <>
@@ -144,9 +174,13 @@ function Game({
           </div>
           <div className="w-full flex flex-col justify-center items-start mt-2">
             <p className="mb-2 text-lg text-start font-bold text-[#6e6e6e]">
-              {round}. {decode(question.question)}
+              {decode(question.question.toString())}
             </p>
-            <AnswerList answers={answers} choosen={choosen} setChoosen={setChoosen}></AnswerList>
+            <AnswerList
+              answers={answers}
+              choosen={choosen}
+              setChoosen={setChoosen}
+            ></AnswerList>
             {choosen !== -1 ? (
               <button
                 className="text-lg text-[#59595a] px-8 py-1 border-2 mt-4 mx-auto border-[#818181] bg-[#cccccc] rounded-md"
@@ -166,4 +200,4 @@ function Game({
   );
 }
 
-export default Game;
+export default GameMain;

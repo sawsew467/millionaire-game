@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { IState as Props } from "../App";
+import { IState as Props } from "../../App";
 
 interface IProps {
   players: Props["players"];
@@ -14,20 +14,49 @@ interface IProps {
 }
 
 function Winner({
-  players,
-  setPlayers,
-  results,
-  setResults,
+  // players,
+  // setPlayers,
+  // results,
+  // setResults,
   match,
   setMatch,
   setRound,
 }: IProps) {
+  const [players, setPlayers] = useState([
+    {
+      id: 1,
+      name: "",
+      answers: [],
+      times: [],
+    },
+    {
+      id: 2,
+      name: "",
+      answers: [],
+      times: [],
+    },
+  ]);
+  const [results, setResults] = useState([
+    {
+      id: 1,
+      result: [],
+    },
+    {
+      id: 2,
+      result: [],
+    },
+  ]);
+  useEffect(() => {
+    setPlayers(JSON.parse(`${window.localStorage.getItem("players")}`));
+    setResults(JSON.parse(`${window.localStorage.getItem("results")}`));
+  }, []);
+  const numberOfRounds = 3;
   let score1: number = 0;
   let time1: number = 0;
   let score2: number = 0;
   let time2: number = 0;
 
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i <= numberOfRounds; i++) {
     time1 = time1 + players[0].times[i];
     if (results[0].result[i] === players[0].answers[i]) {
       score1++;
@@ -71,7 +100,35 @@ function Winner({
         times: [],
       },
     ]);
-    navigate("/loading");
+    setResults([
+      {
+        id: 1,
+        result: [],
+      },
+      {
+        id: 2,
+        result: [],
+      },
+    ]);
+    window.localStorage.setItem(
+      "players",
+      JSON.stringify([
+        {
+          id: 1,
+          name: players[0].name,
+          answers: [],
+          times: [],
+        },
+        {
+          id: 2,
+          name: players[1].name,
+          answers: [],
+          times: [],
+        },
+      ])
+    );
+
+    navigate("/game");
   };
   return (
     <>
@@ -80,7 +137,7 @@ function Winner({
           <p className="text-2xl font-bold text-[#505150]">Match {match}</p>
           <div className="w-[10rem]">
             <img
-              src={require("../assets/images/gameicon.png")}
+              src={require("../../assets/images/gameicon.png")}
               alt={"img"}
             ></img>
           </div>

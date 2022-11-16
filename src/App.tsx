@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { Route, Routes } from "react-router";
 import CreateGame from "./pages/CreateGame";
-import Game from "./pages/Game";
+import GamePage from "./pages/GamePage";
 import Home from "./pages/Home";
-import Loading from "./pages/Loading";
 import Result from "./pages/Result";
 import Winner from "./pages/Winner";
 
@@ -56,17 +55,13 @@ function App() {
         <Route
           path="/create-game"
           element={
-            <CreateGame setPlayers={setPlayers}></CreateGame>
+            <CreateGame setPlayers={setPlayers} players={players}></CreateGame>
           }
-        ></Route>
-        <Route
-          path="/loading"
-          element={<Loading turn={turn} round={round}></Loading>}
         ></Route>
         <Route
           path="/game"
           element={
-            <Game
+            <GamePage
               players={players}
               setPlayers={setPlayers}
               round={round}
@@ -75,12 +70,21 @@ function App() {
               setTurn={setTurn}
               results={results}
               setResults={setResults}
-            ></Game>
+              match={match}
+              setMatch={setMatch}
+            ></GamePage>
           }
         ></Route>
         <Route
           path="/result"
-          element={<Result players={players} results={results}></Result>}
+          // element={<Result 
+          //   // players={players} 
+          //   // results={results}
+          //   >
+              
+          //   </Result>
+          // }
+          element={<Result></Result>}
         ></Route>
         <Route
           path="/winner"

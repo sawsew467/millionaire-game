@@ -1,19 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { IState as Props } from "../App";
+import { IState as Props } from "../../App";
 
 interface IProps {
+  players: Props["players"];
   setPlayers: React.Dispatch<React.SetStateAction<Props["players"]>>;
 }
 
-function CreateGame({ setPlayers }: IProps) {
+function CreateGame({ setPlayers, players }: IProps) {
   const [name1, setName1] = useState<string>("");
   const [name2, setName2] = useState<string>("");
   const [isErr, setIsErr] = useState<boolean>(false);
   const navigate = useNavigate();
-  const handleSubmit = (): void => {
+  const isValidated = (name1: string, name2: string) => {
     if (!name1 || !name2) {
+      return false;
+    }
+    if (
+      name1[0] === " " ||
+      name2[0] === " " ||
+      name1[name1.length] === " " ||
+      name2[name2.length] === " "
+    ) {
+      return false;
+    }
+    const format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    if (format.test(name1) || format.test(name2)) {
+      return false;
+    }
+    return true;
+  };
+  const handleSubmit = (): void => {
+    if (!isValidated(name1, name2)) {
       setIsErr(true);
       return;
     }
@@ -31,8 +50,11 @@ function CreateGame({ setPlayers }: IProps) {
         times: [],
       },
     ]);
-    navigate("/loading");
   };
+  useEffect(() => {
+    window.localStorage.setItem("players", JSON.stringify(players));
+    name1 && navigate("/game");
+  }, [players]);
   const handleEnter1 = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -80,13 +102,7 @@ function CreateGame({ setPlayers }: IProps) {
           >
             Submit
           </button>
-          {isErr && (
-            <p className="text-[#ff5151] text-sm mt-4">
-              {name1 === ""
-                ? "Please enter Player1's name!"
-                : name2 === "" && "Please enter Player2's name!"}
-            </p>
-          )}
+          {isErr && <p className="text-[#ff5151] text-sm mt-4">Error!!!</p>}
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
-import React from "react";
-import { IState as Props } from "../App";
+import React, { useEffect } from "react";
+import { IState as Props } from "../../App";
 
 interface IProps {
   searchArr: Props["players"];
@@ -18,6 +18,7 @@ function Table({
   scores,
   times,
 }: IProps) {
+  const numberOfRounds: number = 3;
   return (
     <div className="w-full flex flex-col mt-4 text-sm">
       <div className="flex flex-row font-bold">
@@ -43,10 +44,10 @@ function Table({
             {players[item.id - 1].name}
           </div>
           <div className="w-1/5 flex justify-center items-center p-2 border-2 border-l-0 border-t-0 border-[#818181]">
-            {answersChars.slice((item.id - 1) * 3, item.id * 3).join(", ")}
+            {answersChars.slice((item.id - 1) * numberOfRounds, item.id * numberOfRounds).join(", ")}
           </div>
           <div className="w-1/5 flex justify-center items-center p-2 border-2 border-l-0 border-t-0 border-[#818181]">
-            {resultsChars.slice((item.id - 1) * 3, item.id * 3).join(", ")}
+            {resultsChars.slice((item.id - 1) * numberOfRounds, item.id * numberOfRounds).join(", ")}
           </div>
           <div className="w-1/5 flex justify-center items-center p-2 border-2 border-l-0 border-t-0 border-[#818181]">
             {scores[item.id - 1]}

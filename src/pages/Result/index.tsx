@@ -1,33 +1,56 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { IState as Props } from "../App";
-import Table from "../components/Table";
+import { IState as Props } from "../../App";
+import Table from "../../components/Table";
 
-interface IProps {
-  players: Props["players"];
-  results: Props["results"];
-}
-
-function Result({ players, results }: IProps) {
+function Result() {
+  const [players, setPlayers] = useState([
+    {
+      id: 1,
+      name: "",
+      answers: [],
+      times: [],
+    },
+    {
+      id: 2,
+      name: "",
+      answers: [],
+      times: [],
+    },
+  ]);
+  const [results, setResults] = useState([
+    {
+      id: 1,
+      result: [],
+    },
+    {
+      id: 2,
+      result: [],
+    },
+  ]);
+  useEffect(() => {
+    setPlayers(JSON.parse(`${window.localStorage.getItem("players")}`));
+    setResults(JSON.parse(`${window.localStorage.getItem("results")}`));
+  }, []);
   const [searchInput, setSearchInput] = useState<string>("");
-  const [searchArr, setSearchArr] = useState<IProps["players"]>(players);
+  const [searchArr, setSearchArr] = useState<any>(players);
   const [resultsChars, setResultsChars] = useState<string[]>([]);
   const [answersChars, setAnswersChars] = useState<string[]>([]);
   const [scores, setScores] = useState<number[]>([]);
   const [times, setTimes] = useState<number[]>([]);
   useEffect(() => {
-    const resultsChar1: string[] = results[0].result.map((item) =>
+    const resultsChar1: string[] = results[0].result.map((item: any) =>
       String.fromCharCode("A".charCodeAt(0) + item)
     );
-    const resultsChar2: string[] = results[1].result.map((item) =>
+    const resultsChar2: string[] = results[1].result.map((item: any) =>
       String.fromCharCode("A".charCodeAt(0) + item)
     );
-    const answersChar1: string[] = players[0].answers.map((item) =>
+    const answersChar1: string[] = players[0].answers.map((item: any) =>
       String.fromCharCode("A".charCodeAt(0) + item) === "@"
         ? "empty"
         : String.fromCharCode("A".charCodeAt(0) + item)
     );
-    const answersChar2: string[] = players[1].answers.map((item) =>
+    const answersChar2: string[] = players[1].answers.map((item: any) =>
       String.fromCharCode("A".charCodeAt(0) + item) === "@"
         ? "empty"
         : String.fromCharCode("A".charCodeAt(0) + item)
@@ -49,6 +72,7 @@ function Result({ players, results }: IProps) {
     }
     setAnswersChars([...answersChar1, ...answersChar2]);
     setResultsChars([...resultsChar1, ...resultsChar2]);
+
     setScores([score1, score2]);
     setTimes([time1, time2]);
     const resultData = {
@@ -70,8 +94,8 @@ function Result({ players, results }: IProps) {
     window.localStorage.setItem("resultData", JSON.stringify(resultData));
   }, [players, results]);
   const handleSearch = (): void => {
-    const playersName = players.map((item) => item.name.toLowerCase());
-    const filterArr = players.filter((item, index) =>
+    const playersName = players.map((item: any) => item.name.toLowerCase());
+    const filterArr = players.filter((item: any, index: number) =>
       playersName[index].includes(searchInput.toLowerCase())
     );
     setSearchArr(filterArr);
@@ -95,9 +119,9 @@ function Result({ players, results }: IProps) {
               </button>
             </Link>
           </div>
-          <form className="flex items-strech mt-4 mx-auto">
+          <form className="flex sm:flex-row flex-col items-strech mt-4 mx-auto">
             <input
-              className="md:w-[16rem] outline-none border-2 border-[#818181] px-2 py-1 rounded-l-full"
+              className="md:w-[16rem] outline-none border-2 border-[#818181] px-2 py-1 sm:rounded-l-full"
               type="text"
               placeholder="Search player"
               value={searchInput}
@@ -105,13 +129,20 @@ function Result({ players, results }: IProps) {
               onKeyDown={(e) => handleEnter(e)}
             ></input>
             <div
-              className="border-2 border-l-0 border-[#818181] rounded-r-full px-6 flex items-center cursor-pointer"
+              className="border-2 sm:border-l-0 border-[#818181] sm:rounded-r-full sm:px-6 px-2 flex items-center justify-center cursor-pointer sm:mt-0 mt-2"
               onClick={handleSearch}
             >
               Search
             </div>
           </form>
-          <Table searchArr={searchArr}players={players} answersChars={answersChars} resultsChars={resultsChars} scores={scores} times={times}></Table>
+          <Table
+            searchArr={searchArr}
+            players={players}
+            answersChars={answersChars}
+            resultsChars={resultsChars}
+            scores={scores}
+            times={times}
+          ></Table>
         </div>
       </div>
     </>
