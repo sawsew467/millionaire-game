@@ -41,19 +41,23 @@ function Table({
       {searchArr.map((item, index) => (
         <div className="flex flex-row" key={index}>
           <div className="w-1/5 flex justify-center items-center p-2 border-2 border-t-0 border-[#818181]">
-            {players[item.id - 1].name}
+            {players[item.id].name}
           </div>
           <div className="w-1/5 flex justify-center items-center p-2 border-2 border-l-0 border-t-0 border-[#818181]">
-            {answersChars.slice((item.id - 1) * numberOfRounds, item.id * numberOfRounds).join(", ")}
+            {answersChars
+              .slice(item.id * numberOfRounds, (item.id + 1) * numberOfRounds)
+              .join(", ")}
           </div>
           <div className="w-1/5 flex justify-center items-center p-2 border-2 border-l-0 border-t-0 border-[#818181]">
-            {resultsChars.slice((item.id - 1) * numberOfRounds, item.id * numberOfRounds).join(", ")}
+            {resultsChars
+              .slice(item.id * numberOfRounds, (item.id + 1) * numberOfRounds)
+              .join(", ")}
           </div>
           <div className="w-1/5 flex justify-center items-center p-2 border-2 border-l-0 border-t-0 border-[#818181]">
-            {scores[item.id - 1]}
+            {scores[item.id]}
           </div>
           <div className="w-1/5 flex justify-center items-center p-2 border-2 border-l-0 border-t-0 border-[#818181]">
-            {times[item.id - 1]}
+            {times[item.id]}
           </div>
         </div>
       ))}

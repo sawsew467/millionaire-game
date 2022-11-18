@@ -36,18 +36,27 @@ function CreateGame({ setPlayers, players }: IProps) {
       setIsErr(true);
       return;
     }
+    window.localStorage.setItem("turn", "0");
+    window.localStorage.setItem("match", "1");
+    window.localStorage.setItem("round", "1");
     setPlayers([
       {
-        id: 1,
+        id: 0,
         name: name1,
+        questions: [],
         answers: [],
-        times: [],
+        correct_answers: [],
+        time: 0,
+        score: 0,
       },
       {
-        id: 2,
+        id: 1,
         name: name2,
+        questions: [],
         answers: [],
-        times: [],
+        correct_answers: [],
+        time: 0,
+        score: 0,
       },
     ]);
   };
@@ -96,10 +105,7 @@ function CreateGame({ setPlayers, players }: IProps) {
               onKeyDown={(e) => handleEnter2(e)}
             ></input>
           </form>
-          <button
-            className="border-2 border-[#818181] text-[#6e6e6e] px-6 mt-4"
-            onClick={handleSubmit}
-          >
+          <button className="border-2 border-[#818181] text-[#6e6e6e] px-6 mt-4">
             Submit
           </button>
           {isErr && <p className="text-[#ff5151] text-sm mt-4">Error!!!</p>}

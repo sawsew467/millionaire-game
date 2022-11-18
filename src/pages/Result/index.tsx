@@ -6,43 +6,40 @@ import Table from "../../components/Table";
 function Result() {
   const [players, setPlayers] = useState([
     {
+      id: 0,
+      name: "",
+      questions: [],
+      answers: [],
+      correct_answers: [],
+      time: 0,
+      score: 0,
+    },
+    {
       id: 1,
       name: "",
+      questions: [],
       answers: [],
-      times: [],
-    },
-    {
-      id: 2,
-      name: "",
-      answers: [],
-      times: [],
-    },
-  ]);
-  const [results, setResults] = useState([
-    {
-      id: 1,
-      result: [],
-    },
-    {
-      id: 2,
-      result: [],
+      correct_answers: [],
+      time: 0,
+      score: 0,
     },
   ]);
   useEffect(() => {
     setPlayers(JSON.parse(`${window.localStorage.getItem("players")}`));
-    setResults(JSON.parse(`${window.localStorage.getItem("results")}`));
   }, []);
   const [searchInput, setSearchInput] = useState<string>("");
-  const [searchArr, setSearchArr] = useState<any>(players);
+  const [searchArr, setSearchArr] = useState<any>(
+    JSON.parse(`${window.localStorage.getItem("players")}`)
+  );
   const [resultsChars, setResultsChars] = useState<string[]>([]);
   const [answersChars, setAnswersChars] = useState<string[]>([]);
   const [scores, setScores] = useState<number[]>([]);
   const [times, setTimes] = useState<number[]>([]);
-  useEffect(() => {
-    const resultsChar1: string[] = results[0].result.map((item: any) =>
+  useEffect((): void => {
+    const resultsChar1: string[] = players[0].correct_answers.map((item: any) =>
       String.fromCharCode("A".charCodeAt(0) + item)
     );
-    const resultsChar2: string[] = results[1].result.map((item: any) =>
+    const resultsChar2: string[] = players[1].correct_answers.map((item: any) =>
       String.fromCharCode("A".charCodeAt(0) + item)
     );
     const answersChar1: string[] = players[0].answers.map((item: any) =>
@@ -55,44 +52,28 @@ function Result() {
         ? "empty"
         : String.fromCharCode("A".charCodeAt(0) + item)
     );
-    let score1: number = 0;
-    let time1: number = 0;
-    let score2: number = 0;
-    let time2: number = 0;
-
-    for (let i = 0; i < 3; i++) {
-      time1 = time1 + players[0].times[i];
-      if (resultsChar1[i] === answersChar1[i]) {
-        score1++;
-      }
-      time2 = time2 + players[1].times[i];
-      if (resultsChar2[i] === answersChar2[i]) {
-        score2++;
-      }
-    }
     setAnswersChars([...answersChar1, ...answersChar2]);
     setResultsChars([...resultsChar1, ...resultsChar2]);
-
-    setScores([score1, score2]);
-    setTimes([time1, time2]);
-    const resultData = {
-      player1: {
-        id: players[0].id,
-        name: players[0].name,
-        answers: answersChar1,
-        results: resultsChar1,
-        timeFinish: time1,
-      },
-      player2: {
-        id: players[1].id,
-        name: players[1].name,
-        answers: answersChar2,
-        results: resultsChar2,
-        timeFinish: time2,
-      },
-    };
-    window.localStorage.setItem("resultData", JSON.stringify(resultData));
-  }, [players, results]);
+    setScores([players[0].score, players[1].score]);
+    setTimes([players[0].time, players[1].time]);
+    let winner: string = "";
+    if (players[0].score !== players[1].score) {
+      winner =
+        players[0].score > players[1].score
+          ? `Winner: ${players[0].name}`
+          : `Winner: ${players[1].name}`;
+    } else {
+      if (players[0].time !== players[1].time) {
+        winner =
+          players[0].time < players[1].time
+            ? `Winner: ${players[0].name}`
+            : `Winner: ${players[1].name}`;
+      } else {
+        winner = "The match is drawn!";
+      }
+    }
+    window.localStorage.setItem("winner", winner);
+  }, [players]);
   const handleSearch = (): void => {
     const playersName = players.map((item: any) => item.name.toLowerCase());
     const filterArr = players.filter((item: any, index: number) =>
@@ -107,6 +88,7 @@ function Result() {
       setSearchInput("");
     }
   };
+
   return (
     <>
       <div className="w-[100vw] h-[100vh] flex flex-col justify-center items-center p-2">

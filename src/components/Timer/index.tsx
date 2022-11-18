@@ -2,7 +2,6 @@ import React from "react";
 
 interface IProps {
   countdown: number;
-
 }
 
 function Timer({ countdown}: IProps) {

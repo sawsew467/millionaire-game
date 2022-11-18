@@ -1,21 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { getQuestion } from "../../apis";
-import { IState as Props } from "../../App";
 import GameMain from "../../components/GameMain";
 import LoadingMatch from "../../components/LoadingMatch";
 import LoadingRound from "../../components/LoadingRound";
+import { IState as Props } from "../../App";
+
 
 interface IProps {
   players: Props["players"];
   setPlayers: React.Dispatch<React.SetStateAction<Props["players"]>>;
-  results: Props["results"];
-  setResults: React.Dispatch<React.SetStateAction<Props["results"]>>;
-  round: number;
-  setRound: React.Dispatch<React.SetStateAction<number>>;
-  turn: number;
-  setTurn: React.Dispatch<React.SetStateAction<number>>;
-  match: number;
-  setMatch: React.Dispatch<React.SetStateAction<number>>;
 }
 
 interface IState {
@@ -32,18 +25,13 @@ interface IState {
 function Index({
   players,
   setPlayers,
-  round,
-  setRound,
-  turn,
-  setTurn,
-  results,
-  setResults,
-  match,
-  setMatch,
 }: IProps) {
   const [question, setQuestion] = useState<IState["question"]>();
   const [isLoadingMatch, setIsLoadingMatch] = useState<boolean>(true);
-  useEffect(() => {
+  const match:number = JSON.parse(`${window.localStorage.getItem("match")}`) ?? 0;
+  const turn:number = JSON.parse(`${window.localStorage.getItem("turn")}`) ?? 0;
+  const round:number = JSON.parse(`${window.localStorage.getItem("round")}`) ?? 0;
+  useEffect(():void => {
     setTimeout(() => {
       setIsLoadingMatch(!isLoadingMatch);
     }, 1000);
@@ -65,11 +53,7 @@ function Index({
           players={JSON.parse(`${window.localStorage.getItem("players")}`)}
           setPlayers={setPlayers}
           round={round}
-          setRound={setRound}
           turn={turn}
-          setTurn={setTurn}
-          results={results}
-          setResults={setResults}
           question={question}
           setQuestion={setQuestion}
         ></GameMain>

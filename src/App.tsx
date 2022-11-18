@@ -10,44 +10,35 @@ export interface IState {
   players: {
     id: number;
     name: string;
+    questions: string[];
     answers: number[];
-    times: number[];
-  }[];
-  results: {
-    id: number;
-    result: number[];
+    correct_answers: number[];
+    time: number;
+    score: number;
   }[];
 }
 
 function App() {
   const [players, setPlayers] = useState<IState["players"]>([
     {
+      id: 0,
+      name: "",
+      questions: [],
+      answers: [],
+      correct_answers: [],
+      time: 0,
+      score: 0,
+    },
+    {
       id: 1,
       name: "",
+      questions: [],
       answers: [],
-      times: [],
-    },
-    {
-      id: 2,
-      name: "",
-      answers: [],
-      times: [],
+      correct_answers: [],
+      time: 0,
+      score: 0,
     },
   ]);
-  const [results, setResults] = useState<IState["results"]>([
-    {
-      id: 1,
-      result: [],
-    },
-    {
-      id: 2,
-      result: [],
-    },
-  ]);
-  const [turn, setTurn] = useState<number>(0);
-  const [round, setRound] = useState<number>(1);
-  const [match, setMatch] = useState<number>(1);
-
   return (
     <>
       <Routes>
@@ -61,46 +52,11 @@ function App() {
         <Route
           path="/game"
           element={
-            <GamePage
-              players={players}
-              setPlayers={setPlayers}
-              round={round}
-              setRound={setRound}
-              turn={turn}
-              setTurn={setTurn}
-              results={results}
-              setResults={setResults}
-              match={match}
-              setMatch={setMatch}
-            ></GamePage>
+            <GamePage players={players} setPlayers={setPlayers}></GamePage>
           }
         ></Route>
-        <Route
-          path="/result"
-          // element={<Result 
-          //   // players={players} 
-          //   // results={results}
-          //   >
-              
-          //   </Result>
-          // }
-          element={<Result></Result>}
-        ></Route>
-        <Route
-          path="/winner"
-          element={
-            <Winner
-              players={players}
-              setPlayers={setPlayers}
-              results={results}
-              setResults={setResults}
-              match={match}
-              setMatch={setMatch}
-              round={round}
-              setRound={setRound}
-            ></Winner>
-          }
-        ></Route>
+        <Route path="/result" element={<Result></Result>}></Route>
+        <Route path="/winner" element={<Winner></Winner>}></Route>
       </Routes>
     </>
   );

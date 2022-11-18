@@ -8,12 +8,8 @@ import AnswerList from "../AnswerList";
 interface IProps {
   players: Props["players"];
   setPlayers: React.Dispatch<React.SetStateAction<Props["players"]>>;
-  results: Props["results"];
-  setResults: React.Dispatch<React.SetStateAction<Props["results"]>>;
   round: number;
-  setRound: React.Dispatch<React.SetStateAction<number>>;
   turn: number;
-  setTurn: React.Dispatch<React.SetStateAction<number>>;
   question: {
     category: string;
     correct_answer: string;
@@ -56,15 +52,11 @@ function GameMain({
   players,
   setPlayers,
   round,
-  setRound,
   turn,
-  setTurn,
-  results,
-  setResults,
   question,
   setQuestion,
 }: IProps) {
-  const numberOfRounds:number = 3;
+  const numberOfRounds: number = 3;
   const navigate = useNavigate();
   const [countdown, setCountdown] = useState<number>(10);
   const [choosen, setChoosen] = useState<number>(-1);
@@ -81,37 +73,14 @@ function GameMain({
     .sort((a, b) => {
       return a.answer[0].charCodeAt(0) - b.answer[0].charCodeAt(0);
     });
-  const handlePlayerTurn = (turn: number): void => {
-    setResults([
-      {
-        id: 1,
-        result: results[0].result,
-      },
-      {
-        id: 2,
-        result: results[1].result,
-      },
-    ]);
+  const handlePlayerTurn = (turn: number, correctIndex: number): void => {
+    players[turn].correct_answers.push(correctIndex);
     countdown === 0
       ? players[turn].answers.push(-1)
       : players[turn].answers.push(choosen);
-
-    players[turn].times.push(10 - countdown);
-
-    setPlayers([
-      {
-        id: 1,
-        name: players[0].name,
-        answers: players[0].answers,
-        times: players[0].times,
-      },
-      {
-        id: 2,
-        name: players[1].name,
-        answers: players[1].answers,
-        times: players[1].times,
-      },
-    ]);
+    players[turn].time += 10 - countdown;
+    correctIndex == choosen && players[turn].score++;
+    window.localStorage.setItem("turn", JSON.stringify(Math.abs(turn - 1)));
   };
   const handleSubmit = (): void => {
     let correctIndex = 0;
@@ -120,11 +89,9 @@ function GameMain({
         correctIndex = i;
       }
     }
-
     if (turn === 0) {
-      results[0].result.push(correctIndex);
-      handlePlayerTurn(turn);
-      setTurn(1);
+      handlePlayerTurn(turn, correctIndex);
+
       const newQues = {
         ...question,
         question: "",
@@ -132,10 +99,8 @@ function GameMain({
       setQuestion(newQues);
     }
     if (turn === 1) {
-      results[1].result.push(correctIndex);
-      handlePlayerTurn(turn);
-      setTurn(0);
-      setRound(round + 1);
+      handlePlayerTurn(turn, correctIndex);
+      window.localStorage.setItem("round", JSON.stringify(round + 1));
       if (round + 1 > numberOfRounds) {
         navigate("/result");
       } else {
@@ -147,7 +112,6 @@ function GameMain({
       }
     }
     window.localStorage.setItem("players", JSON.stringify(players));
-    window.localStorage.setItem("results", JSON.stringify(results));
   };
   useEffect((): void => {
     const timer = setTimeout(() => {
@@ -158,6 +122,7 @@ function GameMain({
       handleSubmit();
     }
   }, [countdown]);
+
   return (
     <>
       <div className="w-[100vw] h-[100vh] flex flex-col justify-center items-center">
@@ -181,18 +146,12 @@ function GameMain({
               choosen={choosen}
               setChoosen={setChoosen}
             ></AnswerList>
-            {choosen !== -1 ? (
-              <button
-                className="text-lg text-[#59595a] px-8 py-1 border-2 mt-4 mx-auto border-[#818181] bg-[#cccccc] rounded-md"
-                onClick={handleSubmit}
-              >
-                Submit
-              </button>
-            ) : (
-              <button className="text-lg text-[#59595a] px-8 py-1 border-2 mt-4 mx-auto border-[#818181] bg-[#cccccc] rounded-md opacity-50 cursor-not-allowed">
-                Submit
-              </button>
-            )}
+            <button
+              className="text-lg text-[#59595a] px-8 py-1 border-2 mt-4 mx-auto border-[#818181] bg-[#cccccc] rounded-md"
+              onClick={handleSubmit}
+            >
+              Submit
+            </button>
           </div>
         </div>
       </div>
