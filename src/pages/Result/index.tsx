@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { IState as Props } from "../../App";
 import Table from "../../components/Table";
 
 function Result() {

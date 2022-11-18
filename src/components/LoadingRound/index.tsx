@@ -1,21 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import { getQuestion } from "../../apis";
+import React from "react";
 
 interface IProps {
   turn: number;
   round: number;
-}
-
-interface IState {
-  question: {
-    category: string;
-    correct_answer: string;
-    difficulty: string;
-    incorrect_answers: string[];
-    question: string[];
-    type: string;
-  };
 }
 
 function LoadingRound({ turn, round }: IProps) {

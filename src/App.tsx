@@ -10,7 +10,6 @@ export interface IState {
   players: {
     id: number;
     name: string;
-    questions: string[];
     answers: number[];
     correct_answers: number[];
     time: number;
@@ -23,7 +22,6 @@ function App() {
     {
       id: 0,
       name: "",
-      questions: [],
       answers: [],
       correct_answers: [],
       time: 0,
@@ -32,7 +30,6 @@ function App() {
     {
       id: 1,
       name: "",
-      questions: [],
       answers: [],
       correct_answers: [],
       time: 0,

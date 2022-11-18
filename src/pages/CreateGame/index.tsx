@@ -25,7 +25,7 @@ function CreateGame({ setPlayers, players }: IProps) {
     ) {
       return false;
     }
-    const format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    const format = /[ `!@#$%^&*()_+-=[\]{};':"|,.<>/?~]/;
     if (format.test(name1) || format.test(name2)) {
       return false;
     }
@@ -43,7 +43,6 @@ function CreateGame({ setPlayers, players }: IProps) {
       {
         id: 0,
         name: name1,
-        questions: [],
         answers: [],
         correct_answers: [],
         time: 0,
@@ -52,7 +51,6 @@ function CreateGame({ setPlayers, players }: IProps) {
       {
         id: 1,
         name: name2,
-        questions: [],
         answers: [],
         correct_answers: [],
         time: 0,
@@ -62,7 +60,7 @@ function CreateGame({ setPlayers, players }: IProps) {
   };
   useEffect(() => {
     window.localStorage.setItem("players", JSON.stringify(players));
-    name1 && navigate("/game");
+    name1 && name2 && navigate("/game");
   }, [players]);
   const handleEnter1 = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Enter") {

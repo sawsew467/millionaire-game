@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
 function Winner() {
@@ -16,7 +16,6 @@ function Winner() {
         {
           id: 0,
           name: players[0].name,
-          questions: [],
           answers: [],
           correct_answers: [],
           time: 0,
@@ -25,7 +24,6 @@ function Winner() {
         {
           id: 1,
           name: players[1].name,
-          questions: [],
           answers: [],
           correct_answers: [],
           time: 0,
