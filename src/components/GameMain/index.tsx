@@ -79,7 +79,7 @@ function GameMain({
       ? players[turn].answers.push(-1)
       : players[turn].answers.push(choosen);
     players[turn].time += 10 - countdown;
-    correctIndex == choosen && players[turn].score++;
+    correctIndex === choosen && players[turn].score++;
     window.localStorage.setItem("turn", JSON.stringify(Math.abs(turn - 1)));
   };
   const handleSubmit = (): void => {
@@ -121,6 +121,7 @@ function GameMain({
       clearTimeout(timer);
       handleSubmit();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [countdown]);
 
   return (

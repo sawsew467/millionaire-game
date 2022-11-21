@@ -61,6 +61,7 @@ function CreateGame({ setPlayers, players }: IProps) {
   useEffect(() => {
     window.localStorage.setItem("players", JSON.stringify(players));
     name1 && name2 && navigate("/game");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [players]);
   const handleEnter1 = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (e.key === "Enter") {
@@ -103,7 +104,7 @@ function CreateGame({ setPlayers, players }: IProps) {
               onKeyDown={(e) => handleEnter2(e)}
             ></input>
           </form>
-          <button className="border-2 border-[#818181] text-[#6e6e6e] px-6 mt-4">
+          <button className="border-2 border-[#818181] text-[#6e6e6e] px-6 mt-4" onClick={handleSubmit}>
             Submit
           </button>
           {isErr && <p className="text-[#ff5151] text-sm mt-4">Error!!!</p>}
