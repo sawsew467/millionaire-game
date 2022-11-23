@@ -60,6 +60,7 @@ function CreateGame({ setPlayers, players }: IProps) {
   };
   useEffect(() => {
     window.localStorage.setItem("players", JSON.stringify(players));
+    window.localStorage.setItem("timeRemaining", JSON.stringify(10));
     name1 && name2 && navigate("/game");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [players]);

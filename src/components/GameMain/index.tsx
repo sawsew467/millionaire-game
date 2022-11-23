@@ -19,17 +19,14 @@ interface IProps {
     type: string;
   };
   setQuestion: React.Dispatch<
-    React.SetStateAction<
-      | {
-          category: string;
-          correct_answer: string;
-          difficulty: string;
-          incorrect_answers: string[];
-          question: string;
-          type: string;
-        }
-      | undefined
-    >
+    React.SetStateAction<{
+      category: string;
+      correct_answer: string;
+      difficulty: string;
+      incorrect_answers: string[];
+      question: string;
+      type: string;
+    }>
   >;
 }
 
@@ -58,7 +55,9 @@ function GameMain({
 }: IProps) {
   const numberOfRounds: number = 3;
   const navigate = useNavigate();
-  const [countdown, setCountdown] = useState<number>(10);
+  const [countdown, setCountdown] = useState<number>(
+    JSON.parse(`${window.localStorage.getItem("timeRemaining")}`) ?? 10
+  );
   const [choosen, setChoosen] = useState<number>(-1);
   const answers: IState["answers"] = [
     question.correct_answer,
@@ -111,11 +110,17 @@ function GameMain({
         setQuestion(newQues);
       }
     }
+    window.localStorage.setItem("timeRemaining", JSON.stringify(10));
     window.localStorage.setItem("players", JSON.stringify(players));
+    localStorage.removeItem("question");
   };
   useEffect((): void => {
     const timer = setTimeout(() => {
       setCountdown(countdown - 1);
+      window.localStorage.setItem(
+        "timeRemaining",
+        JSON.stringify(countdown - 1)
+      );
     }, 1000);
     if (countdown <= 0) {
       clearTimeout(timer);
